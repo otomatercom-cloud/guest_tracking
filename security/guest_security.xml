@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_guest_tracking" model="ir.module.category">
+        <field name="name">Guest Tracking</field>
+        <field name="sequence">25</field>
+    </record>
+
+    <record id="privilege_guest_tracking" model="res.groups.privilege">
+        <field name="name">Guest Tracking</field>
+        <field name="category_id" ref="module_category_guest_tracking"/>
+    </record>
+
+    <record id="group_guest_reception_user" model="res.groups">
+        <field name="name">Reception User</field>
+        <field name="privilege_id" ref="privilege_guest_tracking"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_guest_analytics_user" model="res.groups">
+        <field name="name">Management / Analytics User</field>
+        <field name="privilege_id" ref="privilege_guest_tracking"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_guest_manager" model="res.groups">
+        <field name="name">Guest Tracking Manager</field>
+        <field name="privilege_id" ref="privilege_guest_tracking"/>
+        <field name="implied_ids" eval="[(4, ref('group_guest_reception_user')),
+                                          (4, ref('group_guest_analytics_user'))]"/>
+    </record>
+
+    <!-- Record rules -->
+    <record id="rule_guest_visit_company" model="ir.rule">
+        <field name="name">Guest Visit: multi-company</field>
+        <field name="model_id" ref="model_otm_guest_visit"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_guest_reception_user')),
+                                     (4, ref('group_guest_analytics_user')),
+                                     (4, ref('group_guest_manager'))]"/>
+    </record>
+
+    <record id="rule_guest_branch_company" model="ir.rule">
+        <field name="name">Guest Branch: multi-company</field>
+        <field name="model_id" ref="model_otm_guest_branch"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('group_guest_reception_user')),
+                                     (4, ref('group_guest_analytics_user')),
+                                     (4, ref('group_guest_manager'))]"/>
+    </record>
+
+    <record id="rule_guest_analytics_readonly" model="ir.rule">
+        <field name="name">Guest Visit: analytics read-only</field>
+        <field name="model_id" ref="model_otm_guest_visit"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_guest_analytics_user'))]"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+</odoo>

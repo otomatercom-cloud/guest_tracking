@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_otm_guest_root" name="Guest Tracking" sequence="60"
+              groups="group_guest_reception_user,group_guest_analytics_user,group_guest_manager"/>
+
+    <menuitem id="menu_otm_guest_reception_dashboard" name="Reception Dashboard"
+              parent="menu_otm_guest_root" action="action_otm_guest_reception_dashboard"
+              sequence="10" groups="group_guest_reception_user,group_guest_manager"/>
+
+    <menuitem id="menu_otm_guest_visitor" name="Visitors" parent="menu_otm_guest_root"
+              action="action_otm_guest_visitor" sequence="20"
+              groups="group_guest_reception_user,group_guest_analytics_user,group_guest_manager"/>
+
+    <menuitem id="menu_otm_guest_visit" name="Visits" parent="menu_otm_guest_root"
+              action="action_otm_guest_visit" sequence="30"
+              groups="group_guest_reception_user,group_guest_analytics_user,group_guest_manager"/>
+
+    <menuitem id="menu_otm_guest_analytics" name="Analytics" parent="menu_otm_guest_root"
+              action="action_otm_guest_analytics_dashboard" sequence="40"
+              groups="group_guest_analytics_user,group_guest_manager"/>
+
+    <menuitem id="menu_otm_guest_configuration" name="Configuration" parent="menu_otm_guest_root"
+              sequence="90" groups="group_guest_manager"/>
+
+    <menuitem id="menu_otm_guest_config_branch" name="Branches" parent="menu_otm_guest_configuration"
+              action="action_otm_guest_branch" sequence="10"/>
+
+    <menuitem id="menu_otm_guest_config_qr" name="QR Codes" parent="menu_otm_guest_configuration"
+              action="action_otm_guest_qr_code" sequence="20"/>
+
+    <menuitem id="menu_otm_guest_config_category" name="Visit Categories" parent="menu_otm_guest_configuration"
+              action="action_otm_guest_visit_category" sequence="30"/>
+
+    <menuitem id="menu_otm_guest_config_course" name="Courses" parent="menu_otm_guest_configuration"
+              action="action_otm_guest_course" sequence="40"/>
+
+    <menuitem id="menu_otm_guest_config_position" name="Interview Positions" parent="menu_otm_guest_configuration"
+              action="action_otm_guest_interview_position" sequence="50"/>
+</odoo>

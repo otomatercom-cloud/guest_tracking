@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_otm_guest_visitor_list" model="ir.ui.view">
+        <field name="name">otm.guest.visitor.list</field>
+        <field name="model">otm.guest.visitor</field>
+        <field name="arch" type="xml">
+            <list string="Visitors">
+                <field name="name"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="place"/>
+                <field name="visit_count"/>
+                <field name="last_visit_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_otm_guest_visitor_form" model="ir.ui.view">
+        <field name="name">otm.guest.visitor.form</field>
+        <field name="model">otm.guest.visitor</field>
+        <field name="arch" type="xml">
+            <form string="Visitor">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_visits" type="object" class="oe_stat_button" icon="fa-address-card">
+                            <field name="visit_count" widget="statinfo" string="Visits"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="mobile"/>
+                            <field name="email"/>
+                            <field name="place"/>
+                            <field name="company"/>
+                        </group>
+                        <group>
+                            <field name="first_visit_date"/>
+                            <field name="last_visit_date"/>
+                            <field name="admission_visit_count"/>
+                            <field name="interview_visit_count"/>
+                            <field name="enquiry_visit_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                    <notebook>
+                        <page string="Visit History">
+                            <field name="visit_ids" readonly="1">
+                                <list>
+                                    <field name="visit_date"/>
+                                    <field name="branch_id"/>
+                                    <field name="category_id"/>
+                                    <field name="course_id"/>
+                                    <field name="status"/>
+                                    <field name="duration"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_otm_guest_visitor_search" model="ir.ui.view">
+        <field name="name">otm.guest.visitor.search</field>
+        <field name="model">otm.guest.visitor</field>
+        <field name="arch" type="xml">
+            <search string="Visitors">
+                <field name="name"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <separator/>
+                <group>
+                    <filter name="group_place" string="Place" context="{'group_by': 'place'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_otm_guest_visitor" model="ir.actions.act_window">
+        <field name="name">Visitors</field>
+        <field name="res_model">otm.guest.visitor</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Visitors are created automatically from QR registrations or backend walk-ins.</p></field>
+    </record>
+</odoo>

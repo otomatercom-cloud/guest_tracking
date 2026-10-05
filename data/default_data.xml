@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="category_admission" model="otm.guest.visit.category">
+        <field name="name">Admission</field>
+        <field name="code">admission</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="category_interview" model="otm.guest.visit.category">
+        <field name="name">Interview</field>
+        <field name="code">interview</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="category_course_enquiry" model="otm.guest.visit.category">
+        <field name="name">Course Enquiry</field>
+        <field name="code">course_enquiry</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="category_business_meeting" model="otm.guest.visit.category">
+        <field name="name">Business Meeting</field>
+        <field name="code">business_meeting</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="category_vendor_partner" model="otm.guest.visit.category">
+        <field name="name">Vendor / Partner</field>
+        <field name="code">vendor_partner</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="category_employee_meeting" model="otm.guest.visit.category">
+        <field name="name">Employee Meeting</field>
+        <field name="code">employee_meeting</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="category_other" model="otm.guest.visit.category">
+        <field name="name">Other</field>
+        <field name="code">other</field>
+        <field name="sequence">70</field>
+    </record>
+</odoo>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="otm_guest_registration_layout" name="Guest Registration Layout">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+                <title>Visitor Registration</title>
+                <style>
+                    * { box-sizing: border-box; }
+                    body {
+                        margin: 0; padding: 0; background: #f4f6f8;
+                        font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                        color: #263238;
+                    }
+                    .otm-guest-card {
+                        max-width: 480px; margin: 0 auto; min-height: 100vh;
+                        background: #fff; box-shadow: 0 0 24px rgba(0,0,0,0.06);
+                        padding: 28px 22px 40px;
+                    }
+                    .otm-guest-branch { text-align: center; margin-bottom: 18px; }
+                    .otm-guest-branch h2 { margin: 4px 0 0; font-size: 22px; color: #1a237e; }
+                    .otm-guest-branch .sub { color: #78909c; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
+                    .otm-guest-field { margin-bottom: 18px; }
+                    .otm-guest-field label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+                    .otm-guest-field .req { color: #e53935; }
+                    .otm-guest-field input, .otm-guest-field select, .otm-guest-field textarea {
+                        width: 100%; padding: 14px 12px; font-size: 16px; border: 1px solid #cfd8dc;
+                        border-radius: 10px; background: #fafafa;
+                    }
+                    .otm-guest-field input:focus, .otm-guest-field select:focus {
+                        outline: none; border-color: #3949ab; background: #fff;
+                    }
+                    .otm-guest-submit {
+                        width: 100%; padding: 16px; font-size: 17px; font-weight: 700;
+                        background: #3949ab; color: #fff; border: none; border-radius: 12px;
+                        margin-top: 8px;
+                    }
+                    .otm-guest-submit:disabled { background: #9fa8da; }
+                    .otm-guest-error {
+                        background: #ffebee; color: #c62828; padding: 12px 14px; border-radius: 10px;
+                        margin-bottom: 16px; font-size: 14px;
+                    }
+                    .otm-guest-success { text-align: center; padding-top: 60px; }
+                    .otm-guest-success .icon { font-size: 56px; color: #43a047; }
+                    .otm-guest-success h1 { color: #263238; }
+                    .otm-guest-success .ref {
+                        display: inline-block; margin-top: 12px; padding: 10px 18px; background: #eceff1;
+                        border-radius: 10px; font-weight: 700; letter-spacing: .03em; font-size: 18px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="otm-guest-card">
+                    <t t-out="0"/>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <template id="otm_guest_registration_form" name="Guest Registration Form">
+        <t t-call="guest_tracking.otm_guest_registration_layout">
+            <div class="otm-guest-branch">
+                <div class="sub">Visitor Registration</div>
+                <h2 t-esc="branch_name"/>
+            </div>
+            <div t-if="error" class="otm-guest-error" t-esc="error"/>
+            <form method="post" t-att-action="'/guest/register/%s' % token" id="otm_guest_form" autocomplete="off">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                <div class="otm-guest-field">
+                    <label>Name <span class="req">*</span></label>
+                    <input type="text" name="name" required="required" maxlength="100"
+                           t-att-value="form_values.get('name', '')"/>
+                </div>
+
+                <div class="otm-guest-field">
+                    <label>Mobile Number <span class="req">*</span></label>
+                    <input type="tel" name="mobile" inputmode="numeric" pattern="[0-9+ ]{7,15}"
+                           required="required" maxlength="20" t-att-value="form_values.get('mobile', '')"/>
+                </div>
+
+                <div class="otm-guest-field">
+                    <label>Email</label>
+                    <input type="email" name="email" maxlength="120" t-att-value="form_values.get('email', '')"/>
+                </div>
+
+                <div class="otm-guest-field">
+                    <label>Place</label>
+                    <input type="text" name="place" maxlength="100" t-att-value="form_values.get('place', '')"/>
+                </div>
+
+                <div class="otm-guest-field">
+                    <label>Purpose of Visit <span class="req">*</span></label>
+                    <select name="category_id" id="otm_guest_category" required="required">
+                        <option value="">Select purpose</option>
+                        <t t-foreach="categories" t-as="cat">
+                            <option t-att-value="cat['id']" t-att-data-code="cat['code']"
+                                    t-att-selected="str(cat['id']) == form_values.get('category_id') or None">
+                                <t t-esc="cat['name']"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+
+                <div class="otm-guest-field" id="otm_guest_course_field" style="display:none;">
+                    <label>Course <span class="req">*</span></label>
+                    <select name="course_id">
+                        <option value="">Select course</option>
+                        <t t-foreach="courses" t-as="c">
+                            <option t-att-value="c['id']"
+                                    t-att-selected="str(c['id']) == form_values.get('course_id') or None">
+                                <t t-esc="c['name']"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+
+                <div class="otm-guest-field" id="otm_guest_position_field" style="display:none;">
+                    <label>Interview Position <span class="req">*</span></label>
+                    <select name="interview_position_id">
+                        <option value="">Select position</option>
+                        <t t-foreach="positions" t-as="p">
+                            <option t-att-value="p['id']"
+                                    t-att-selected="str(p['id']) == form_values.get('interview_position_id') or None">
+                                <t t-esc="p['name']"/>
+                            </option>
+                        </t>
+                    </select>
+                </div>
+
+                <div class="otm-guest-field" id="otm_guest_other_field" style="display:none;">
+                    <label>Please specify <span class="req">*</span></label>
+                    <input type="text" name="other_purpose" maxlength="150"
+                           t-att-value="form_values.get('other_purpose', '')"/>
+                </div>
+
+                <button type="submit" class="otm-guest-submit" id="otm_guest_submit_btn">Submit</button>
+            </form>
+        </t>
+
+        <script>
+            (function () {
+                var catSelect = document.getElementById('otm_guest_category');
+                var courseField = document.getElementById('otm_guest_course_field');
+                var positionField = document.getElementById('otm_guest_position_field');
+                var otherField = document.getElementById('otm_guest_other_field');
+
+                function toggleFields() {
+                    var opt = catSelect.options[catSelect.selectedIndex];
+                    var code = opt ? opt.getAttribute('data-code') : '';
+                    courseField.style.display = code === 'admission' ? 'block' : 'none';
+                    positionField.style.display = code === 'interview' ? 'block' : 'none';
+                    otherField.style.display = code === 'other' ? 'block' : 'none';
+                }
+                if (catSelect) {
+                    catSelect.addEventListener('change', toggleFields);
+                    toggleFields();
+                }
+
+                var form = document.getElementById('otm_guest_form');
+                var btn = document.getElementById('otm_guest_submit_btn');
+                if (form) {
+                    form.addEventListener('submit', function () {
+                        btn.disabled = true;
+                        btn.textContent = 'Submitting...';
+                    });
+                }
+            })();
+        </script>
+    </template>
+
+    <template id="otm_guest_registration_success" name="Guest Registration Success">
+        <t t-call="guest_tracking.otm_guest_registration_layout">
+            <div class="otm-guest-success">
+                <div class="icon">&#10003;</div>
+                <h1>Thank You</h1>
+                <p>Your visit has been registered successfully.</p>
+                <div class="ref" t-esc="reference"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="otm_guest_registration_invalid" name="Guest Registration Invalid QR">
+        <t t-call="guest_tracking.otm_guest_registration_layout">
+            <div class="otm-guest-success">
+                <h1>Link Not Available</h1>
+                <p>This registration link is invalid or no longer active.
+                   Please contact the reception desk.</p>
+            </div>
+        </t>
+    </template>
+</odoo>

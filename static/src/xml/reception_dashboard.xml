@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="guest_tracking.ReceptionDashboard">
+    <div class="o_otm_guest_dashboard">
+        <div class="o_otm_guest_kpi_row">
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.today_total || 0"/><label>Today's Visitors</label></div>
+            <div class="o_otm_guest_kpi kpi-waiting"><span t-esc="state.kpi.waiting || 0"/><label>Waiting</label></div>
+            <div class="o_otm_guest_kpi kpi-meeting"><span t-esc="state.kpi.meeting || 0"/><label>In Meeting</label></div>
+            <div class="o_otm_guest_kpi kpi-completed"><span t-esc="state.kpi.completed || 0"/><label>Completed</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.admissions || 0"/><label>Admissions</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.interviews || 0"/><label>Interviews</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.course_enquiries || 0"/><label>Course Enquiries</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.other || 0"/><label>Other</label></div>
+        </div>
+
+        <div class="o_otm_guest_quick_actions">
+            <button class="btn btn-primary" t-on-click="() => this.openQuickAction('otm.guest.visit', 'form')">New Walk-in</button>
+            <button class="btn btn-secondary" t-on-click="() => this.openQuickAction('otm.guest.qr.code', 'list')">QR Codes</button>
+            <button class="btn btn-secondary" t-on-click="() => this.openQuickAction('otm.guest.visitor', 'list')">Visitors</button>
+            <button class="btn btn-secondary" t-on-click="() => this.openQuickAction('otm.guest.visit', 'list')">Visits</button>
+        </div>
+
+        <h5 class="mt-3">Today's Visitors</h5>
+        <table class="table table-sm o_otm_guest_table">
+            <thead>
+                <tr>
+                    <th>Time</th><th>Visitor</th><th>Mobile</th><th>Branch</th>
+                    <th>Purpose</th><th>Course</th><th>Status</th><th>Receptionist</th><th/>
+                </tr>
+            </thead>
+            <tbody>
+                <tr t-foreach="state.visits" t-as="v" t-key="v.id">
+                    <td t-esc="v.time"/>
+                    <td><a href="#" t-on-click.prevent="() => this.openVisit(v.id)" t-esc="v.visitor"/></td>
+                    <td t-esc="v.mobile"/>
+                    <td t-esc="v.branch"/>
+                    <td t-esc="v.purpose"/>
+                    <td t-esc="v.course"/>
+                    <td><span t-att-class="'badge o_otm_guest_status_' + v.status" t-esc="v.status"/></td>
+                    <td t-esc="v.receptionist"/>
+                    <td>
+                        <button t-if="v.status == 'waiting'" class="btn btn-sm btn-outline-primary"
+                                t-on-click="() => this.onStartMeeting(v.id)">Start</button>
+                        <button t-if="v.status == 'waiting' or v.status == 'meeting'" class="btn btn-sm btn-outline-success"
+                                t-on-click="() => this.onCompleteVisit(v.id)">Complete</button>
+                        <button t-if="v.status == 'waiting'" class="btn btn-sm btn-outline-danger"
+                                t-on-click="() => this.onCancelVisit(v.id)">Cancel</button>
+                    </td>
+                </tr>
+                <tr t-if="!state.loading and !state.visits.length">
+                    <td colspan="9" class="text-center text-muted">No visitors yet today.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</t>
+
+<t t-name="guest_tracking.AnalyticsDashboard">
+    <div class="o_otm_guest_dashboard">
+        <div class="o_otm_guest_filter_row">
+            <select t-on-change="onRangeChange" class="form-select o_otm_guest_range_select">
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="this_week">This Week</option>
+                <option value="this_month" selected="selected">This Month</option>
+                <option value="last_month">Last Month</option>
+                <option value="all">All Time</option>
+            </select>
+        </div>
+
+        <div class="o_otm_guest_kpi_row">
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.total_visitors || 0"/><label>Total Visitors</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.total_visits || 0"/><label>Total Visits</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.admissions || 0"/><label>Admissions</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.interviews || 0"/><label>Interviews</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.course_enquiries || 0"/><label>Course Enquiries</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.other || 0"/><label>Other</label></div>
+            <div class="o_otm_guest_kpi"><span t-esc="state.kpi.avg_duration || 0"/><label>Avg Duration (hrs)</label></div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-6">
+                <h5>By Branch</h5>
+                <table class="table table-sm">
+                    <tr t-foreach="state.by_branch" t-as="row" t-key="row.label">
+                        <td t-esc="row.label"/><td class="text-end" t-esc="row.value"/>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-6">
+                <h5>By Purpose</h5>
+                <table class="table table-sm">
+                    <tr t-foreach="state.by_purpose" t-as="row" t-key="row.label">
+                        <td t-esc="row.label"/><td class="text-end" t-esc="row.value"/>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-6">
+                <h5>By Course</h5>
+                <table class="table table-sm">
+                    <tr t-foreach="state.by_course" t-as="row" t-key="row.label">
+                        <td t-esc="row.label"/><td class="text-end" t-esc="row.value"/>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-6">
+                <h5>By Status</h5>
+                <table class="table table-sm">
+                    <tr t-foreach="state.by_status" t-as="row" t-key="row.label">
+                        <td t-esc="row.label"/><td class="text-end" t-esc="row.value"/>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</t>
+
+</templates>

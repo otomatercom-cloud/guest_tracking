@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_otm_guest_visit_list" model="ir.ui.view">
+        <field name="name">otm.guest.visit.list</field>
+        <field name="model">otm.guest.visit</field>
+        <field name="arch" type="xml">
+            <list string="Visits" decoration-info="status == 'waiting'"
+                  decoration-warning="status == 'meeting'"
+                  decoration-success="status == 'completed'"
+                  decoration-muted="status == 'cancelled'">
+                <field name="visit_reference"/>
+                <field name="check_in_datetime"/>
+                <field name="visitor_name"/>
+                <field name="visitor_mobile"/>
+                <field name="branch_id"/>
+                <field name="category_id"/>
+                <field name="course_id"/>
+                <field name="status"/>
+                <field name="receptionist_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_otm_guest_visit_form" model="ir.ui.view">
+        <field name="name">otm.guest.visit.form</field>
+        <field name="model">otm.guest.visit</field>
+        <field name="arch" type="xml">
+            <form string="Visit">
+                <header>
+                    <button name="action_start_meeting" type="object" string="Start Meeting"
+                            class="btn-primary" invisible="status != 'waiting'"/>
+                    <button name="action_complete_visit" type="object" string="Complete Visit"
+                            class="btn-primary" invisible="status not in ('waiting', 'meeting')"/>
+                    <button name="action_cancel_visit" type="object" string="Cancel Visit"
+                            invisible="status in ('completed', 'cancelled')"/>
+                    <field name="status" widget="statusbar" statusbar_visible="waiting,meeting,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="visit_reference"/>
+                        <h1><field name="visit_reference" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="visitor_id"/>
+                            <field name="branch_id"/>
+                            <field name="category_id"/>
+                            <field name="category_code" invisible="1"/>
+                            <field name="course_id" required="category_code == 'admission'"
+                                   invisible="category_code != 'admission'"/>
+                            <field name="interview_position_id" required="category_code == 'interview'"
+                                   invisible="category_code != 'interview'"/>
+                            <field name="other_purpose" required="category_code == 'other'"
+                                   invisible="category_code != 'other'"/>
+                        </group>
+                        <group>
+                            <field name="visit_date"/>
+                            <field name="check_in_datetime"/>
+                            <field name="meeting_start_datetime" readonly="1"/>
+                            <field name="check_out_datetime" readonly="1"/>
+                            <field name="duration" readonly="1"/>
+                            <field name="receptionist_id"/>
+                            <field name="source" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_otm_guest_visit_search" model="ir.ui.view">
+        <field name="name">otm.guest.visit.search</field>
+        <field name="model">otm.guest.visit</field>
+        <field name="arch" type="xml">
+            <search string="Visits">
+                <field name="visitor_name"/>
+                <field name="visitor_mobile"/>
+                <field name="branch_id"/>
+                <field name="category_id"/>
+                <field name="course_id"/>
+                <filter name="today" string="Today" domain="[('visit_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="waiting" string="Waiting" domain="[('status', '=', 'waiting')]"/>
+                <filter name="in_meeting" string="In Meeting" domain="[('status', '=', 'meeting')]"/>
+                <filter name="completed" string="Completed" domain="[('status', '=', 'completed')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_branch" string="Branch" context="{'group_by': 'branch_id'}"/>
+                    <filter name="group_purpose" string="Purpose" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_course" string="Course" context="{'group_by': 'course_id'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                    <filter name="group_date" string="Visit Date" context="{'group_by': 'visit_date'}"/>
+                    <filter name="group_receptionist" string="Receptionist" context="{'group_by': 'receptionist_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_otm_guest_visit_graph" model="ir.ui.view">
+        <field name="name">otm.guest.visit.graph</field>
+        <field name="model">otm.guest.visit</field>
+        <field name="arch" type="xml">
+            <graph string="Visits" type="bar">
+                <field name="branch_id"/>
+                <field name="category_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_otm_guest_visit_pivot" model="ir.ui.view">
+        <field name="name">otm.guest.visit.pivot</field>
+        <field name="model">otm.guest.visit</field>
+        <field name="arch" type="xml">
+            <pivot string="Visits">
+                <field name="branch_id" type="row"/>
+                <field name="category_id" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_otm_guest_visit" model="ir.actions.act_window">
+        <field name="name">Visits</field>
+        <field name="res_model">otm.guest.visit</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Visits are created automatically when a guest registers via QR, or manually for a walk-in.</p></field>
+    </record>
+</odoo>

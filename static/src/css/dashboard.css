@@ -1,0 +1,50 @@
+.o_otm_guest_dashboard {
+    padding: 16px 24px;
+}
+.o_otm_guest_kpi_row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.o_otm_guest_kpi {
+    flex: 1 1 120px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+}
+.o_otm_guest_kpi span {
+    display: block;
+    font-size: 26px;
+    font-weight: 700;
+    color: #3949ab;
+}
+.o_otm_guest_kpi label {
+    font-size: 12px;
+    color: #78909c;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+}
+.o_otm_guest_kpi.kpi-waiting span { color: #fb8c00; }
+.o_otm_guest_kpi.kpi-meeting span { color: #1e88e5; }
+.o_otm_guest_kpi.kpi-completed span { color: #43a047; }
+.o_otm_guest_quick_actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.o_otm_guest_table th {
+    color: #78909c;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+.o_otm_guest_status_waiting { background: #fff3e0; color: #ef6c00; }
+.o_otm_guest_status_meeting { background: #e3f2fd; color: #1565c0; }
+.o_otm_guest_status_completed { background: #e8f5e9; color: #2e7d32; }
+.o_otm_guest_status_cancelled { background: #eceff1; color: #607d8b; }
+.o_otm_guest_range_select {
+    max-width: 220px;
+    margin-bottom: 12px;
+}

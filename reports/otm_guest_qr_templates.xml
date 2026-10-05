@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="otm_guest_qr_report_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page text-center" style="padding-top: 80px;">
+                    <h1 t-esc="doc.branch_id.name"/>
+                    <h3>Scan to Register Your Visit</h3>
+                    <div style="margin: 40px auto;">
+                        <img t-if="doc.qr_image"
+                             t-att-src="image_data_uri(doc.qr_image)"
+                             style="width: 320px; height: 320px;"/>
+                    </div>
+                    <p style="max-width: 420px; margin: 0 auto; color: #555;">
+                        Please scan this QR code and complete the visitor registration form.
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

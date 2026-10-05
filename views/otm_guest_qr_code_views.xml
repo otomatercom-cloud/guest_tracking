@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_otm_guest_qr_code_list" model="ir.ui.view">
+        <field name="name">otm.guest.qr.code.list</field>
+        <field name="model">otm.guest.qr.code</field>
+        <field name="arch" type="xml">
+            <list string="QR Codes">
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="registration_url"/>
+                <field name="created_at"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_otm_guest_qr_code_form" model="ir.ui.view">
+        <field name="name">otm.guest.qr.code.form</field>
+        <field name="model">otm.guest.qr.code</field>
+        <field name="arch" type="xml">
+            <form string="QR Code">
+                <header>
+                    <button name="action_generate_qr" type="object" string="Generate QR"
+                            class="btn-primary" invisible="token"/>
+                    <button name="action_regenerate_token" type="object" string="Regenerate Token"
+                            class="btn-warning" invisible="not token"
+                            confirm="Regenerating invalidates the previous public URL. Continue?"/>
+                    <button name="action_print_qr" type="object" string="Print QR" class="btn-secondary"/>
+                    <button name="action_open_registration_page" type="object" string="Open Registration Page"
+                            class="btn-secondary" invisible="not token"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Kochi Reception QR"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="branch_id"/>
+                            <field name="registration_url" widget="url"/>
+                        </group>
+                        <group>
+                            <field name="token" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="qr_image" widget="image" class="oe_avatar" options="{'size': [200, 200]}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_otm_guest_qr_code" model="ir.actions.act_window">
+        <field name="name">QR Codes</field>
+        <field name="res_model">otm.guest.qr.code</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Generate a secure QR code for each branch's reception desk.</p></field>
+    </record>
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_otm_guest_visit_category_list" model="ir.ui.view">
+        <field name="name">otm.guest.visit.category.list</field>
+        <field name="model">otm.guest.visit.category</field>
+        <field name="arch" type="xml">
+            <list string="Visit Purposes" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_otm_guest_visit_category" model="ir.actions.act_window">
+        <field name="name">Visit Categories</field>
+        <field name="res_model">otm.guest.visit.category</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">Configure the reasons a visitor may register for.</p></field>
+    </record>
+</odoo>
